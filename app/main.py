@@ -12,7 +12,10 @@ from app.config import settings
 from app.middleware.correlation_id import CorrelationIdMiddleware
 from app.middleware.locale import LocaleMiddleware
 from app.middleware.response_envelope import ResponseEnvelopeMiddleware
-from app.api.routers import auth, users, stores, items, chat, payments, favorites, tags, reports
+from app.api.routers import (
+    auth, users, stores, items, chat, payments, favorites, tags, reports,
+    uploads, otp, devices, orders, reviews, notifications,
+)
 from app.websocket.handlers import ws_router
 
 logger = structlog.get_logger()
@@ -65,6 +68,12 @@ app.include_router(payments.router, prefix=PREFIX)
 app.include_router(favorites.router, prefix=PREFIX)
 app.include_router(tags.router, prefix=PREFIX)
 app.include_router(reports.router, prefix=PREFIX)
+app.include_router(uploads.router, prefix=PREFIX)
+app.include_router(otp.router, prefix=PREFIX)
+app.include_router(devices.router, prefix=PREFIX)
+app.include_router(orders.router, prefix=PREFIX)
+app.include_router(reviews.router, prefix=PREFIX)
+app.include_router(notifications.router, prefix=PREFIX)
 
 # WebSocket
 app.include_router(ws_router)
