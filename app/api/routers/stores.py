@@ -6,6 +6,7 @@ from app.dependencies import CurrentUser
 from app.schemas.store import StoreCreate, StoreUpdate, StoreResponse
 from app.repositories.store import StoreRepository
 from app.core.exceptions import ForbiddenError, ConflictError
+from app.core.cache import cache_get, cache_set, cache_delete
 
 router = APIRouter(prefix="/stores", tags=["stores"])
 
@@ -36,8 +37,18 @@ async def get_my_store(current_user: CurrentUser, session: AsyncSession = Depend
 
 @router.get("/{store_id}", response_model=StoreResponse)
 async def get_store(store_id: UUID, session: AsyncSession = Depends(get_db)):
+    cache_key = f"store:{store_id}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
     repo = StoreRepository(session)
-    return await repo.get_or_404(store_id)
+    store = await repo.get_or_404(store_id)
+
+    from app.schemas.store import StoreResponse as StoreResp
+    store_data = StoreResp.model_validate(store).model_dump()
+    await cache_set(cache_key, store_data, ttl=120)
+    return store
 
 
 @router.patch("/{store_id}", response_model=StoreResponse)
@@ -54,4 +65,5 @@ async def update_store(
     updates = body.model_dump(exclude_none=True)
     if updates:
         await repo.update(store_id, **updates)
+    await cache_delete(f"store:{store_id}")
     return await repo.get(store_id)

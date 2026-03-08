@@ -9,6 +9,7 @@ from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, CursorItemLis
 from app.repositories.item import ItemRepository
 from app.core.enums import ItemCondition, ItemStatus, SellerType, UserRole
 from app.core.exceptions import ForbiddenError
+from app.core.cache import cache_get, cache_set, cache_delete
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -56,9 +57,17 @@ async def list_items(
 
 @router.get("/{item_id}", response_model=ItemResponse)
 async def get_item(item_id: UUID, session: AsyncSession = Depends(get_db)):
+    cache_key = f"item:{item_id}"
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+
     repo = ItemRepository(session)
     item = await repo.get_or_404(item_id)
     await repo.increment_views(item_id)
+
+    item_data = ItemResponse.model_validate(item).model_dump()
+    await cache_set(cache_key, item_data, ttl=60)
     return item
 
 
@@ -107,6 +116,7 @@ async def update_item(
     if body.tag_ids is not None:
         await repo.set_tags(item_id, body.tag_ids)
 
+    await cache_delete(f"item:{item_id}")
     return await repo.get(item_id)
 
 
@@ -124,3 +134,4 @@ async def delete_item(
         raise ForbiddenError()
 
     await repo.update(item_id, status=ItemStatus.deleted)
+    await cache_delete(f"item:{item_id}")
