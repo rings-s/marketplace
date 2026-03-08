@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -10,6 +11,7 @@ import structlog
 from app.config import settings
 from app.middleware.correlation_id import CorrelationIdMiddleware
 from app.middleware.locale import LocaleMiddleware
+from app.middleware.response_envelope import ResponseEnvelopeMiddleware
 from app.api.routers import auth, users, stores, items, chat, payments, favorites, tags, reports
 from app.websocket.handlers import ws_router
 
@@ -37,6 +39,8 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Middleware (applied in reverse order — last added runs first)
+app.add_middleware(GZipMiddleware, minimum_size=500)
+app.add_middleware(ResponseEnvelopeMiddleware)
 app.add_middleware(LocaleMiddleware)
 app.add_middleware(CorrelationIdMiddleware)
 app.add_middleware(
