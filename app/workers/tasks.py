@@ -42,6 +42,33 @@ async def process_image(ctx, image_url: str, item_id: str) -> None:
     logger.info("image_processing_done", item_id=item_id)
 
 
+async def send_expo_push(ctx, token: str, title: str, body: str, data: dict) -> None:
+    """Send Expo push notification via Expo's push API.
+
+    Enqueue with:
+        await queue.enqueue_job("send_expo_push", token, title, body, data)
+    """
+    import httpx
+    payload = {
+        "to": token,
+        "title": title,
+        "body": body,
+        "data": data,
+        "sound": "default",
+        "priority": "high",
+    }
+    async with httpx.AsyncClient(timeout=10) as client:
+        resp = await client.post(
+            "https://exp.host/--/exponent-push-token/v2/push",
+            json={"to": [payload]},
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
+        )
+        if resp.status_code != 200:
+            logger.warning("expo_push_failed", status=resp.status_code, token=token)
+        else:
+            logger.info("expo_push_sent", token=token, title=title)
+
+
 async def send_payment_notification(ctx, user_email: str, order_id: str, status: str) -> None:
     """Notify buyer/seller of payment status change."""
     subject = f"Payment {status} — Order {order_id[:8]}"
@@ -50,7 +77,7 @@ async def send_payment_notification(ctx, user_email: str, order_id: str, status:
 
 
 class WorkerSettings:
-    functions = [send_notification_email, process_image, send_payment_notification]
+    functions = [send_notification_email, process_image, send_payment_notification, send_expo_push]
     redis_settings = RedisSettings.from_dsn(settings.REDIS_URL)
     max_jobs = 10
     job_timeout = 300
