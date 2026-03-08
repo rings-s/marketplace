@@ -98,3 +98,7 @@ class CursorItemListResponse(BaseModel):
     next_cursor: str | None
     has_more: bool
     total: int
+
+
+class NearbyItemResponse(ItemResponse):
+    distance_km: float

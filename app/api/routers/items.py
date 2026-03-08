@@ -5,7 +5,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.dependencies import CurrentUser
-from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, CursorItemListResponse
+from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, CursorItemListResponse, NearbyItemResponse
+from app.services.location import LocationService
 from app.repositories.item import ItemRepository
 from app.core.enums import ItemCondition, ItemStatus, SellerType, UserRole
 from app.core.exceptions import ForbiddenError
@@ -53,6 +54,32 @@ async def list_items(
         limit=1,
     )
     return CursorItemListResponse(items=items, next_cursor=next_cursor, has_more=has_more, total=total)
+
+
+@router.get("/nearby", response_model=list[NearbyItemResponse])
+async def list_nearby_items(
+    lat: float = Query(..., ge=-90, le=90),
+    lon: float = Query(..., ge=-180, le=180),
+    radius_km: float = Query(10.0, ge=0.1, le=100.0),
+    size: int = Query(20, ge=1, le=100),
+    session: AsyncSession = Depends(get_db),
+):
+    repo = ItemRepository(session)
+    candidates = await repo.list_near(lat=lat, lon=lon, radius_km=radius_km, size=size)
+    location_svc = LocationService()
+    results: list[NearbyItemResponse] = []
+    for item in candidates:
+        dist = location_svc.haversine_km(lat, lon, item.lat, item.lon)  # type: ignore[arg-type]
+        if dist <= radius_km:
+            results.append(
+                NearbyItemResponse(
+                    **ItemResponse.model_validate(item).model_dump(), distance_km=round(dist, 3)
+                )
+            )
+        if len(results) >= size:
+            break
+    results.sort(key=lambda r: r.distance_km)
+    return results
 
 
 @router.get("/{item_id}", response_model=ItemResponse)

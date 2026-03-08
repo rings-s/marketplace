@@ -25,12 +25,12 @@ tags:
 
 ## Service Provider
 
-| Field | Details |
-|-------|---------|
-| **Company / Freelancer** | _(Service Provider Name)_ |
-| **Email** | _(contact@example.com)_ |
-| **Location** | _(City, Country)_ |
-| **Project Code** | MKT-2026-001 |
+| Field                    | Details               |
+| ------------------------ | --------------------- |
+| **Company / Freelancer** | Pineal Developers     |
+| **Email**                | rings9619@gmail.com   |
+| **Location**             | Madina, Saudi Arabia  |
+| **Project Code**         | MKT-2026-001          |
 
 ---
 
@@ -64,7 +64,9 @@ tags:
 | 1.13 | Media Upload System (photos, batch upload) | Flat | $500 |
 | 1.14 | Reporting & Content Moderation System | Flat | $400 |
 | 1.15 | Tag & Category Management | Flat | $300 |
-| **Module 1 Subtotal** | | | **$11,300** |
+| 1.16 | SMS Gateway Integration (OurSMS — OTP delivery for Saudi numbers) | Flat | $400 |
+| 1.17 | Location & Map Features (Nominatim geocoding, reverse geocode, proximity search) | Flat | $500 |
+| **Module 1 Subtotal** | | | **$12,200** |
 
 ---
 
@@ -100,21 +102,21 @@ tags:
 
 ## Invoice Summary
 
-| | Amount (USD) |
-|--|-------------|
-| Module 1 — Backend API | $11,300 |
-| Module 2 — Mobile Application | $7,200 |
-| Module 3 — Delivery & Handoff | $1,300 |
-| **Subtotal** | **$19,800** |
-| **Negotiated Project Discount** | **−$4,300** |
-| **Total Due** | **$15,500** |
+|                                 | Amount (USD) |
+| ------------------------------- | ------------ |
+| Module 1 — Backend API          | $12,200      |
+| Module 2 — Mobile Application   | $7,200       |
+| Module 3 — Delivery & Handoff   | $1,300       |
+| **Subtotal**                    | **$20,700**  |
+| **Negotiated Project Discount** | **−$4,300**  |
+| **Total Due**                   | **$16,400**  |
 
 ---
 
 ## Payment Terms
 
 > [!warning] Payment Policy
-> **Full payment of $15,500 USD is due upon successful project delivery and client acceptance.**
+> **Full payment of $16,400 USD is due upon successful project delivery and client acceptance.**
 >
 > No advance payment is required. Payment is triggered when:
 > - All deliverables listed in [[03 - Scope of Work]] have been completed

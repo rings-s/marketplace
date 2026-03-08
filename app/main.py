@@ -14,7 +14,7 @@ from app.middleware.locale import LocaleMiddleware
 from app.middleware.response_envelope import ResponseEnvelopeMiddleware
 from app.api.routers import (
     auth, users, stores, items, chat, payments, favorites, tags, reports,
-    uploads, otp, devices, orders, reviews, notifications,
+    uploads, otp, devices, orders, reviews, notifications, geocode,
 )
 from app.websocket.handlers import ws_router
 
@@ -74,6 +74,7 @@ app.include_router(devices.router, prefix=PREFIX)
 app.include_router(orders.router, prefix=PREFIX)
 app.include_router(reviews.router, prefix=PREFIX)
 app.include_router(notifications.router, prefix=PREFIX)
+app.include_router(geocode.router, prefix=PREFIX)
 
 # WebSocket
 app.include_router(ws_router)

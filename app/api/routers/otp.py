@@ -14,7 +14,7 @@ router = APIRouter(prefix="/otp", tags=["otp"])
 async def send_otp(body: OTPSendRequest, current_user: CurrentUser):
     svc = OTPService()
     try:
-        ttl = await svc.send(str(current_user.id))
+        ttl = await svc.send(str(current_user.id), body.phone)
     except ValueError as e:
         raise ValidationError(str(e))
     return OTPSendResponse(expires_in=ttl)

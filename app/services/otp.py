@@ -3,6 +3,7 @@ import secrets
 import structlog
 import redis.asyncio as aioredis
 from app.config import settings
+from app.services.sms import SMSService
 
 logger = structlog.get_logger()
 
@@ -26,7 +27,7 @@ class OTPService:
     def _rate_key(self, user_id: str) -> str:
         return f"otp_sent:{user_id}"
 
-    async def send(self, user_id: str) -> int:
+    async def send(self, user_id: str, phone: str) -> int:
         """Generate and store OTP. Returns TTL. Raises if rate-limited."""
         r = await self._get_redis()
         if await r.exists(self._rate_key(user_id)):
@@ -35,6 +36,11 @@ class OTPService:
         payload = json.dumps({"code": code, "attempts": 0})
         await r.setex(self._otp_key(user_id), OTP_TTL, payload)
         await r.setex(self._rate_key(user_id), RATE_LIMIT_TTL, "1")
+        sms = SMSService()
+        try:
+            await sms.send_otp(phone, code)
+        except Exception:
+            logger.warning("sms_delivery_failed", user_id=user_id)
         logger.info("otp_generated", user_id=user_id)
         return OTP_TTL
 

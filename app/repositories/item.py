@@ -130,6 +130,30 @@ class ItemRepository(BaseRepository[FurnitureItem]):
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
+    async def list_near(
+        self,
+        *,
+        lat: float,
+        lon: float,
+        radius_km: float,
+        size: int = 20,
+        status: ItemStatus = ItemStatus.active,
+    ) -> list[FurnitureItem]:
+        delta = radius_km / 111.0
+        stmt = (
+            select(FurnitureItem)
+            .where(FurnitureItem.status == status)
+            .where(FurnitureItem.lat.is_not(None))
+            .where(FurnitureItem.lon.is_not(None))
+            .where(FurnitureItem.lat >= lat - delta)
+            .where(FurnitureItem.lat <= lat + delta)
+            .where(FurnitureItem.lon >= lon - delta)
+            .where(FurnitureItem.lon <= lon + delta)
+            .order_by(FurnitureItem.created_at.desc())
+            .limit(size * 4)
+        )
+        return list((await self.session.execute(stmt)).scalars().all())
+
     async def set_tags(self, item_id: UUID, tag_ids: list[UUID]) -> None:
         from sqlalchemy import delete
         await self.session.execute(

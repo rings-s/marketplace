@@ -266,6 +266,50 @@ A bilingual (Arabic & English) online marketplace for buying and selling furnitu
 
 ---
 
+### 1.16 SMS Gateway Integration
+
+**Capabilities:**
+- OTP codes delivered via SMS to Saudi mobile numbers (+9665XXXXXXXX)
+- Integration with OurSMS (oursms.com) — Saudi-native SMS provider
+- Graceful fallback: SMS failure does not block OTP generation
+- Arabic message body for OTP delivery
+- Rate limiting: one OTP per minute per user
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/otp/send` | Send OTP via SMS to verified Saudi number |
+| POST | `/api/v1/otp/verify` | Verify submitted OTP code |
+
+> **Note:** OurSMS account credentials (App SID, App Secret, Sender ID) are the client's responsibility.
+
+---
+
+### 1.17 Location & Map Features
+
+**Capabilities:**
+- Forward geocoding: convert an address or city name to GPS coordinates
+- Reverse geocoding: convert GPS coordinates to a human-readable address
+- Proximity search: find listings within a configurable radius (0.1–100 km)
+- Results sorted by distance (nearest first)
+- Open-source stack — no Google Maps API key required; powered by Nominatim (OpenStreetMap)
+- Restricted to Saudi Arabia (`countrycodes=sa`)
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/geocode/reverse?lat=&lon=` | Reverse geocode coordinates to address |
+| POST | `/api/v1/geocode/search` | Forward geocode: address/city → coordinates |
+| GET | `/api/v1/items/nearby?lat=&lon=&radius_km=&size=` | List nearby listings with distance |
+
+**Mobile Integration:**
+- Leaflet.js for web map display
+- `react-native-maps` for native iOS & Android map view
+- Listing creation: GPS auto-fill with manual override option
+- Listing detail: map pin showing item location
+
+---
+
 ### 1.15 Notifications Center
 
 **Capabilities:**

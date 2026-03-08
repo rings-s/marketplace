@@ -18,7 +18,8 @@ tags:
 **This Software Development Agreement** ("Agreement") is entered into as of the date of last signature below ("Effective Date") by and between:
 
 **Service Provider:**
-Name: _(Full Legal Name)_
+Company: Pineal Developers
+Name: Ahmed Bashir Ali
 Address: _(Address)_
 Email: _(Email)_
 ("Developer")
@@ -48,15 +49,15 @@ The complete scope is defined in the attached [[03 - Scope of Work]] and [[01 - 
 ## 2. Compensation and Payment Terms
 
 ### 2.1 Total Compensation
-The Client agrees to pay the Developer a total fixed fee of **$15,500 USD** (Fifteen Thousand Five Hundred United States Dollars) for all deliverables described in this Agreement.
+The Client agrees to pay the Developer a total fixed fee of **$16,400 USD** (Sixteen Thousand Four Hundred United States Dollars) for all deliverables described in this Agreement.
 
 ### 2.2 Payment Schedule
 > [!important] Payment is due **100% upon project delivery and acceptance**.
 
 | Event | Amount Due |
 |-------|-----------|
-| Project Completion & Client Acceptance | $15,500 USD (100%) |
-| **Total** | **$15,500 USD** |
+| Project Completion & Client Acceptance | $16,400 USD (100%) |
+| **Total** | **$16,400 USD** |
 
 **No advance payment, deposit, or milestone payment is required.** The full amount becomes due only after:
 1. The Developer notifies the Client that all deliverables are complete.

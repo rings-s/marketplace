@@ -44,6 +44,8 @@ tags:
 - **Real-Time**: Live chat between buyers and sellers
 - **Secure Payments**: Saudi-compliant payment gateway
 - **Marketplace**: Individual sellers + registered stores
+- **SMS Gateway**: OTP delivery via OurSMS (oursms.com) — Saudi-native SMS provider
+- **Location & Map**: Open-source geocoding (Nominatim/OpenStreetMap) + proximity search — no Google Maps key required
 
 ---
 
@@ -70,10 +72,11 @@ gantt
 
 ## Key Contacts
 
-| Role | Name | Contact |
-|------|------|---------|
-| Client | Ahmed Almadani | — |
-| Project Lead | — | — |
+| Role            | Name             | Contact    |
+| --------------- | ---------------- | ---------- |
+| Client          | Ahmed Almadani   | —          |
+| Project Manager | Ahmed Bashir Ali | 0507441209 |
+| Company         | Pineal Developers | —         |
 
 ---
 

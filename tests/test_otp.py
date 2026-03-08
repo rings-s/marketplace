@@ -10,7 +10,7 @@ async def test_send_generates_otp():
     mock_redis = AsyncMock()
     mock_redis.exists.return_value = False
     svc._redis = mock_redis
-    ttl = await svc.send("user-123")
+    ttl = await svc.send("user-123", "+966512345678")
     assert ttl == 300
     mock_redis.setex.assert_called()
 
@@ -22,7 +22,7 @@ async def test_send_rate_limited():
     mock_redis.exists.return_value = True
     svc._redis = mock_redis
     with pytest.raises(ValueError, match="already sent"):
-        await svc.send("user-123")
+        await svc.send("user-123", "+966512345678")
 
 
 @pytest.mark.asyncio

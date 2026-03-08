@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     SMTP_PASS: str = ""
     FROM_EMAIL: str = "noreply@marketplace.sa"
 
+    OURSMS_APP_SID: str = ""
+    OURSMS_APP_SECRET: str = ""
+    OURSMS_SENDER_ID: str = "Marketplace"
+
     PLATFORM_FEE_PERCENT: float = 1.0
 
     # JWT
