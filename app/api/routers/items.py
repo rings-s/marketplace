@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.dependencies import CurrentUser
-from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, ItemListResponse
+from app.schemas.item import ItemCreate, ItemUpdate, ItemResponse, CursorItemListResponse
 from app.repositories.item import ItemRepository
 from app.core.enums import ItemCondition, ItemStatus, SellerType, UserRole
 from app.core.exceptions import ForbiddenError
@@ -13,8 +13,9 @@ from app.core.exceptions import ForbiddenError
 router = APIRouter(prefix="/items", tags=["items"])
 
 
-@router.get("", response_model=ItemListResponse)
+@router.get("", response_model=CursorItemListResponse)
 async def list_items(
+    cursor: str | None = None,
     city: str | None = None,
     category: str | None = None,
     condition: ItemCondition | None = None,
@@ -27,8 +28,10 @@ async def list_items(
     session: AsyncSession = Depends(get_db),
 ):
     repo = ItemRepository(session)
-    offset = (page - 1) * size
-    items, total = await repo.list_with_filters(
+    # Cursor-based pagination (primary)
+    items, next_cursor, has_more = await repo.list_with_cursor(
+        cursor=cursor,
+        size=size,
         city=city,
         category=category,
         condition=condition,
@@ -36,11 +39,19 @@ async def list_items(
         min_price=min_price,
         max_price=max_price,
         q=q,
-        offset=offset,
-        limit=size,
     )
-    pages = (total + size - 1) // size
-    return ItemListResponse(items=items, total=total, page=page, size=size, pages=pages)
+    _, total = await repo.list_with_filters(
+        city=city,
+        category=category,
+        condition=condition,
+        seller_type=seller_type,
+        min_price=min_price,
+        max_price=max_price,
+        q=q,
+        offset=0,
+        limit=1,
+    )
+    return CursorItemListResponse(items=items, next_cursor=next_cursor, has_more=has_more, total=total)
 
 
 @router.get("/{item_id}", response_model=ItemResponse)

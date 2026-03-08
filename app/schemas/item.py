@@ -91,3 +91,10 @@ class ItemListResponse(BaseModel):
     page: int
     size: int
     pages: int
+
+
+class CursorItemListResponse(BaseModel):
+    items: list[ItemResponse]
+    next_cursor: str | None
+    has_more: bool
+    total: int

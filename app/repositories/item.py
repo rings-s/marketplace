@@ -4,6 +4,7 @@ from sqlalchemy import select, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.item import FurnitureItem, Tag, FurnitureItemTag
 from app.core.enums import ItemCondition, ItemStatus, SellerType
+from app.core.pagination import decode_cursor, encode_cursor
 from app.repositories.base import BaseRepository
 
 
@@ -54,6 +55,65 @@ class ItemRepository(BaseRepository[FurnitureItem]):
         stmt = stmt.order_by(FurnitureItem.created_at.desc()).offset(offset).limit(limit)
         rows = (await self.session.execute(stmt)).scalars().all()
         return list(rows), total
+
+    async def list_with_cursor(
+        self,
+        *,
+        cursor: str | None = None,
+        size: int = 20,
+        city: str | None = None,
+        category: str | None = None,
+        condition: ItemCondition | None = None,
+        status: ItemStatus = ItemStatus.active,
+        seller_type: SellerType | None = None,
+        min_price: Decimal | None = None,
+        max_price: Decimal | None = None,
+        q: str | None = None,
+    ) -> tuple[list[FurnitureItem], str | None, bool]:
+        """Returns (items, next_cursor, has_more)."""
+        stmt = select(FurnitureItem).where(FurnitureItem.status == status)
+
+        if city:
+            stmt = stmt.where(FurnitureItem.location_city == city)
+        if category:
+            stmt = stmt.where(FurnitureItem.category_main == category)
+        if condition:
+            stmt = stmt.where(FurnitureItem.condition == condition)
+        if seller_type:
+            stmt = stmt.where(FurnitureItem.seller_type == seller_type)
+        if min_price is not None:
+            stmt = stmt.where(FurnitureItem.price_sar >= min_price)
+        if max_price is not None:
+            stmt = stmt.where(FurnitureItem.price_sar <= max_price)
+        if q:
+            pattern = f"%{q}%"
+            stmt = stmt.where(
+                or_(
+                    FurnitureItem.title_ar.ilike(pattern),
+                    FurnitureItem.title_en.ilike(pattern),
+                )
+            )
+
+        if cursor:
+            cur_time, cur_id = decode_cursor(cursor)
+            stmt = stmt.where(
+                (FurnitureItem.created_at < cur_time)
+                | ((FurnitureItem.created_at == cur_time) & (FurnitureItem.id < cur_id))
+            )
+
+        stmt = stmt.order_by(FurnitureItem.created_at.desc(), FurnitureItem.id.desc())
+        stmt = stmt.limit(size + 1)
+
+        rows = list((await self.session.execute(stmt)).scalars().all())
+        has_more = len(rows) > size
+        items = rows[:size]
+
+        next_cursor = None
+        if has_more and items:
+            last = items[-1]
+            next_cursor = encode_cursor(last.created_at, last.id)
+
+        return items, next_cursor, has_more
 
     async def increment_views(self, item_id: UUID) -> None:
         item = await self.get(item_id)
