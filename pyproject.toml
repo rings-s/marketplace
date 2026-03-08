@@ -50,3 +50,7 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint]
+# F821: SQLAlchemy cross-model relationship type hints are forward refs resolved at runtime
+per-file-ignores = { "app/models/*.py" = ["F821"] }

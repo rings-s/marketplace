@@ -1,4 +1,4 @@
-import uuid
+from __future__ import annotations
 from datetime import datetime
 from sqlalchemy import String, Boolean, DateTime, Enum as SAEnum
 from sqlalchemy.orm import mapped_column, Mapped, relationship

@@ -1,5 +1,3 @@
-import os
-import pytest
 from decimal import Decimal
 from app.services.payment import _calculate_fees, _to_halalas, PaymentService
 
