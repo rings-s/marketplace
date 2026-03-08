@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "id": "hub",
+      "type": "file",
+      "file": "Ahmed Almadani/00 - Hub.md",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 180,
+      "color": "1"
+    },
+    {
+      "id": "invoice",
+      "type": "file",
+      "file": "Ahmed Almadani/01 - Invoice #MKT-2026-001.md",
+      "x": -480,
+      "y": 260,
+      "width": 300,
+      "height": 160,
+      "color": "4"
+    },
+    {
+      "id": "contract",
+      "type": "file",
+      "file": "Ahmed Almadani/02 - Development Contract.md",
+      "x": 0,
+      "y": 260,
+      "width": 300,
+      "height": 160,
+      "color": "5"
+    },
+    {
+      "id": "scope",
+      "type": "file",
+      "file": "Ahmed Almadani/03 - Scope of Work.md",
+      "x": 480,
+      "y": 260,
+      "width": 300,
+      "height": 160,
+      "color": "3"
+    },
+    {
+      "id": "card-backend",
+      "type": "text",
+      "text": "## Backend API\n- 15 feature modules\n- 40+ API endpoints\n- Real-time WebSocket chat\n- Payment gateway\n- Push notifications",
+      "x": -480,
+      "y": 500,
+      "width": 300,
+      "height": 200,
+      "color": "6"
+    },
+    {
+      "id": "card-mobile",
+      "type": "text",
+      "text": "## Mobile App\n- iOS & Android\n- Arabic + English\n- 18 screens\n- Real-time features\n- Offline support",
+      "x": 0,
+      "y": 500,
+      "width": 300,
+      "height": 200,
+      "color": "6"
+    },
+    {
+      "id": "card-delivery",
+      "type": "text",
+      "text": "## Delivery\n- 10–12 weeks\n- Production deployment\n- 30-day warranty\n- Full handoff docs\n- 100% on completion",
+      "x": 480,
+      "y": 500,
+      "width": 300,
+      "height": 200,
+      "color": "6"
+    },
+    {
+      "id": "total",
+      "type": "text",
+      "text": "# Total: $15,500 USD\n\n**Payment: 100% upon delivery**\nClient: Ahmed Almadani\nProject: MKT-2026-001",
+      "x": -140,
+      "y": -240,
+      "width": 440,
+      "height": 140,
+      "color": "2"
+    }
+  ],
+  "edges": [
+    {
+      "id": "hub-invoice",
+      "fromNode": "hub",
+      "fromSide": "left",
+      "toNode": "invoice",
+      "toSide": "top",
+      "label": "Pricing"
+    },
+    {
+      "id": "hub-contract",
+      "fromNode": "hub",
+      "fromSide": "bottom",
+      "toNode": "contract",
+      "toSide": "top",
+      "label": "Legal"
+    },
+    {
+      "id": "hub-scope",
+      "fromNode": "hub",
+      "fromSide": "right",
+      "toNode": "scope",
+      "toSide": "top",
+      "label": "Features"
+    },
+    {
+      "id": "invoice-backend",
+      "fromNode": "invoice",
+      "fromSide": "bottom",
+      "toNode": "card-backend",
+      "toSide": "top"
+    },
+    {
+      "id": "contract-mobile",
+      "fromNode": "contract",
+      "fromSide": "bottom",
+      "toNode": "card-mobile",
+      "toSide": "top"
+    },
+    {
+      "id": "scope-delivery",
+      "fromNode": "scope",
+      "fromSide": "bottom",
+      "toNode": "card-delivery",
+      "toSide": "top"
+    },
+    {
+      "id": "total-hub",
+      "fromNode": "total",
+      "fromSide": "bottom",
+      "toNode": "hub",
+      "toSide": "top",
+      "label": "Overview"
+    }
+  ]
+}
